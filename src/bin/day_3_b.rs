@@ -22,30 +22,41 @@ fn main() {
     println!("Tree encounters: {}", encounters);
 }
 
-fn compute(map: Vec<Vec<char>>) -> i32 {
+fn compute(map: Vec<Vec<char>>) -> i64 {
+    let mut product: i64 = 1;
+
     let map_height = map.len();
     let tile_width = map.get(0).unwrap().len();
 
     println!("Height: {}, width: {}", map_height, tile_width);
 
-    let step_right = 3;
-    let step_down = 1;
+    let slopes = vec![
+        (1, 1),
+        (3, 1),
+        (5, 1),
+        (7, 1),
+        (1, 2)
+    ];
 
-    let mut pos_x = 0;
-    let mut pos_y = 0;
+    for slope in slopes {
+        let mut pos_x = 0;
+        let mut pos_y = 0;
 
-    let mut counter = 0;
+        let mut counter = 0;
 
-    while pos_y < map_height {
-        if map[pos_y][pos_x] == '#' {
-            counter += 1;
+        while pos_y < map_height {
+            if map[pos_y][pos_x] == '#' {
+                counter += 1;
+            }
+
+            pos_y += slope.1;
+            pos_x = (pos_x + slope.0) % tile_width;
         }
 
-        pos_y += step_down;
-        pos_x = (pos_x + step_right) % tile_width;
+        product *= counter;
     }
 
-    counter
+    product
 }
 
 #[test]
@@ -74,5 +85,5 @@ fn test() {
         map.push(temp);
     }
 
-    assert_eq!(compute(map), 7);
+    assert_eq!(compute(map), 336);
 }
